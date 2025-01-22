@@ -1,9 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Award, BookOpen, Network, Users2 } from "lucide-react"
+import { Award, BookOpen, Network, Users2, Users, Trophy, Gift, ChevronDown, ChevronUp } from 'lucide-react'
 
 const benefits = [
   {
@@ -12,23 +13,25 @@ const benefits = [
     description: "Develop valuable leadership skills while promoting sustainability",
   },
   {
-    icon: <Network className="w-6 h-6" />,
-    title: "Networking Opportunities",
-    description: "Connect with industry experts and like-minded individuals",
+    icon: <Users className="w-6 h-6" />,
+    title: "Encourage Registrations",
+    description: "Proactively motivate students, faculty, and other stakeholders in your college to register for the conference. Maintain a record of the registrations driven by your efforts.",
   },
   {
-    icon: <BookOpen className="w-6 h-6" />,
-    title: "Knowledge Enhancement",
-    description: "Access exclusive workshops and learning resources",
+    icon: <Trophy className="w-6 h-6" />,
+    title: "Promote the Event",
+    description: "Actively share event details, posters, and updates across your college's social media platforms, notice boards, and student groups. Encourage your peers to participate in the conference.",
   },
   {
-    icon: <Users2 className="w-6 h-6" />,
-    title: "Community Impact",
-    description: "Make a real difference in your campus community",
+    icon: <Gift className="w-6 h-6" />,
+    title: "Engage Your Community",
+    description: "Conduct informational sessions or discussions to highlight the importance of sustainability and green practices. Address queries about the event and provide guidance.",
   },
 ]
 
 export function CampusAmbassadorsSection() {
+  const [expandedRole, setExpandedRole] = useState(null)
+
   return (
     <section id="campus-ambassadors" className="py-20 relative">
       <div className="container mx-auto px-4">
@@ -39,7 +42,7 @@ export function CampusAmbassadorsSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Campus Ambassadors</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Roles & Responsibilities</h2>
           <p className="text-green-300 text-lg md:text-xl max-w-2xl mx-auto">
             Join our network of campus ambassadors and lead the sustainability movement at your institution.
           </p>
@@ -70,12 +73,23 @@ export function CampusAmbassadorsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
+                onClick={() => setExpandedRole(expandedRole === index ? null : index)}
+                className="cursor-pointer"
               >
                 <Card className="bg-green-900/30 backdrop-blur-sm border-green-500/20 hover:border-green-500/40 transition-all duration-300">
                   <CardContent className="p-6">
-                    <div className="text-green-400 mb-4">{benefit.icon}</div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="text-green-400">{benefit.icon}</div>
+                      {expandedRole === index ? (
+                        <ChevronUp className="text-green-400" />
+                      ) : (
+                        <ChevronDown className="text-green-400" />
+                      )}
+                    </div>
                     <h4 className="text-white text-lg font-semibold mb-2">{benefit.title}</h4>
-                    <p className="text-green-300/80">{benefit.description}</p>
+                    <p className={`text-green-300/80 ${expandedRole === index ? '' : 'line-clamp-2'}`}>
+                      {benefit.description}
+                    </p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -86,4 +100,3 @@ export function CampusAmbassadorsSection() {
     </section>
   )
 }
-
