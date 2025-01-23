@@ -1,34 +1,59 @@
-"use client"
+"use client"; // Ensure this is a client component
 
-import { useEffect, useRef } from "react"
-import { motion } from "framer-motion"
-import ParticleBackground from "./components/particle-background"
-import Navigation from "./components/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { AboutSection } from "./sections/about"
-import { CampusAmbassadorsSection } from "./sections/campus-ambassadors"
-import LeaderboardSection from "./sections/leaderboard"
-import Footer from "./components/footer"
-import { Trophy, Medal, Award } from "lucide-react"
-import { Leaf, Users, Building2, Globe2 } from "lucide-react"
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import ParticleBackground from "./components/particle-background";
+import Navigation from "./components/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { AboutSection } from "./sections/about";
+import { CampusAmbassadorsSection } from "./sections/campus-ambassadors";
+import LeaderboardSection from "./sections/leaderboard";
+import Footer from "./components/footer";
+import { Trophy, Medal, Award } from "lucide-react";
+import { Leaf, Users, Building2, Globe2 } from "lucide-react";
 
 export default function Home() {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [ambassadors, setAmbassadors] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Fetch ambassadors data from the backend
+  useEffect(() => {
+    const fetchAmbassadors = async () => {
+      try {
+        const response = await fetch("https://igbc-work.onrender.com/api/ambassadors");
+        if (!response.ok) {
+          throw new Error("Failed to fetch ambassadors");
+        }
+        const data = await response.json();
+        setAmbassadors(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAmbassadors();
+  }, []);
+
+  // Handle mouse position for gradient effect
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
-      if (!containerRef.current) return
-      const rect = containerRef.current.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
-      containerRef.current.style.setProperty("--mouse-x", `${x}px`)
-      containerRef.current.style.setProperty("--mouse-y", `${y}px`)
-    }
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      containerRef.current.style.setProperty("--mouse-x", `${x}px`);
+      containerRef.current.style.setProperty("--mouse-y", `${y}px`);
+    };
 
-    window.addEventListener("mousemove", updateMousePosition)
-    return () => window.removeEventListener("mousemove", updateMousePosition)
-  }, [])
+    window.addEventListener("mousemove", updateMousePosition);
+    return () => window.removeEventListener("mousemove", updateMousePosition);
+  }, []);
 
   return (
     <div
@@ -56,8 +81,6 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                {/* Enhanced Gradient Blur */}
-                
                 {/* Centered and Enlarged Symbol */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <img
@@ -65,7 +88,7 @@ export default function Home() {
                     alt="SustainX Logo"
                     className="w-full h-full object-contain transform hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
-                      console.error("Image failed to load", e)
+                      console.error("Image failed to load", e);
                     }}
                   />
                 </div>
@@ -89,7 +112,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.6 }}
                 >
-                   Join the flagship annual conference by IGBC Student Chapter of CUSAT, where sustainability meets innovation.
+                  Join the flagship annual conference by IGBC Student Chapter of CUSAT, where sustainability meets innovation.
                 </motion.p>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -100,7 +123,7 @@ export default function Home() {
                     size="lg"
                     className="bg-white text-green-700 px-8 py-3 rounded-full font-semibold text-lg hover:bg-green-100 transition-colors inline-flex items-center space-x-2 hover:shadow-lg hover:scale-105 transform transition duration-300"
                   >
-                    < Users className="w-6 h-6" />, 
+                    <Users className="w-6 h-6" />
                     Become an Ambassador
                   </Button>
                 </motion.div>
@@ -110,8 +133,9 @@ export default function Home() {
 
           <AboutSection />
           <CampusAmbassadorsSection />
-           {/* New Prizes & Benefits Section */}
-           <motion.section
+
+          {/* New Prizes & Benefits Section */}
+          <motion.section
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -148,9 +172,10 @@ export default function Home() {
                 </Card>
               </div>
             </div>
-          
           </motion.section>
-          <LeaderboardSection ambassadors={[]} isLoading={false}/>
+
+          {/* Pass ambassadors data to LeaderboardSection */}
+          <LeaderboardSection ambassadors={ambassadors} isLoading={isLoading} />
         </main>
 
         <Footer />
@@ -167,5 +192,5 @@ export default function Home() {
         ></div>
       </div>
     </div>
-  )
+  );
 }
