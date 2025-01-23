@@ -7,12 +7,11 @@ import Navigation from "./components/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { AboutSection } from "./sections/about"
-import { SpeakersSection } from "./sections/speakers"
 import { CampusAmbassadorsSection } from "./sections/campus-ambassadors"
+import LeaderboardSection from "./sections/leaderboard"
 import Footer from "./components/footer"
 import { Trophy, Medal, Award } from "lucide-react"
 import { Leaf, Users, Building2, Globe2 } from "lucide-react"
-
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -149,7 +148,9 @@ export default function Home() {
                 </Card>
               </div>
             </div>
+          
           </motion.section>
+          <LeaderboardSection ambassadors={[]} isLoading={false}/>
         </main>
 
         <Footer />
