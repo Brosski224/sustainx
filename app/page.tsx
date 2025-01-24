@@ -84,8 +84,8 @@ export default function Home() {
                 {/* Centered and Enlarged Symbol */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <img
-                    src="/sustainxlogo.png"
-                    alt="SustainX Logo"
+                    src="/walle.png"
+                    alt="walle Logo"
                     className="w-full h-full object-contain transform hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
                       console.error("Image failed to load", e);
