@@ -2,10 +2,11 @@
 
 import type React from "react"
 import { useState, useMemo } from "react"
-import { Search, Trophy, Loader2 } from "lucide-react"
+import { Search, Trophy, Loader2, Medal, Award, Star } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { motion } from "framer-motion"
 
 interface Ambassador {
   name: string
@@ -36,11 +37,14 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({ ambassadors, is
 
   const topTen = sortedAmbassadors.slice(0, 10)
 
-  const searchResult = useMemo(() => {
-    if (!searchQuery || !ambassadors) return null
+  const searchResults = useMemo(() => {
+    if (!searchQuery || !ambassadors) return []
 
     const query = searchQuery.toLowerCase().trim()
-    return ambassadors.find((amb) => amb.name.toLowerCase().includes(query) || amb.email.toLowerCase().includes(query))
+    return ambassadors.filter(
+      (amb) =>
+        amb.name.toLowerCase().includes(query) || amb.email.toLowerCase().includes(query)
+    )
   }, [searchQuery, ambassadors])
 
   const handleSearch = (e: React.FormEvent) => {
@@ -59,14 +63,14 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({ ambassadors, is
 
   if (isLoading) {
     return (
-      <Card className="bg-white/10 backdrop-blur-lg text-white">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">Ambassador Leaderboard</CardTitle>
+      <Card className="bg-green-950/50 backdrop-blur-lg text-white border-green-800/30 rounded-lg w-full max-w-lg mx-auto">
+        <CardHeader className="p-6">
+          <CardTitle className="text-xl text-center">Ambassador Leaderboard</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col items-center justify-center space-y-4">
-            <Loader2 className="h-12 w-12 animate-spin text-green-400" />
-            <p className="text-lg">Loading leaderboard...</p>
+        <CardContent className="p-6">
+          <div className="flex flex-col items-center justify-center space-y-2">
+            <Loader2 className="h-8 w-8 animate-spin text-green-400" />
+            <p className="text-sm">Loading leaderboard...</p>
           </div>
         </CardContent>
       </Card>
@@ -75,9 +79,9 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({ ambassadors, is
 
   if (!ambassadors) {
     return (
-      <Card className="bg-white/10 backdrop-blur-lg text-white">
-        <CardContent className="flex justify-center items-center">
-          <Loader2 className="h-8 w-8 animate-spin text-green-400" />
+      <Card className="bg-green-950/50 backdrop-blur-lg text-white border-green-800/30 rounded-lg w-full max-w-lg mx-auto">
+        <CardContent className="p-6 flex justify-center items-center">
+          <Loader2 className="h-6 w-6 animate-spin text-green-400" />
         </CardContent>
       </Card>
     )
@@ -85,21 +89,21 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({ ambassadors, is
 
   if (ambassadors.length === 0) {
     return (
-      <Card className="bg-white/10 backdrop-blur-lg text-white">
-        <CardContent>
-          <p className="text-yellow-300">No ambassadors registered yet. Be the first to join!</p>
+      <Card className="bg-green-950/50 backdrop-blur-lg text-white border-green-800/30 rounded-lg w-full max-w-lg mx-auto">
+        <CardContent className="p-6">
+          <p className="text-yellow-300 text-center text-sm">No ambassadors registered yet. Be the first to join!</p>
         </CardContent>
       </Card>
     )
   }
 
   return (
-    <Card className="bg-white/10 backdrop-blur-lg text-white">
-      <CardHeader>
-        <CardTitle className="text-2xl text-center">Ambassador Leaderboard</CardTitle>
+    <Card className="bg-green-950/50 backdrop-blur-lg text-white border-green-800/30 rounded-lg w-full max-w-lg mx-auto">
+      <CardHeader className="p-6">
+        <CardTitle className="text-xl text-center">Ambassador Leaderboard</CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="max-w-md mx-auto mb-8">
+      <CardContent className="p-6">
+        <div className="mb-6">
           <form onSubmit={handleSearch} className="flex gap-2">
             <Input
               type="text"
@@ -111,72 +115,108 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({ ambassadors, is
                   setShowSearchResult(false)
                 }
               }}
-              className="flex-1 bg-white/20 text-white placeholder-gray-300"
+              className="flex-1 bg-green-900/30 text-white placeholder-gray-400 border-green-700/30 focus:border-green-500 focus:ring-green-500 rounded-lg"
             />
-            <Button type="submit" disabled={!searchQuery} className="bg-green-500 hover:bg-green-600">
-              <Search size={20} />
+            <Button
+              type="submit"
+              disabled={!searchQuery}
+              className="bg-green-600 hover:bg-green-700 transition-transform transform hover:scale-105 rounded-lg"
+            >
+              <Search size={16} />
             </Button>
           </form>
         </div>
 
         {showSearchResult && (
-          <div className="max-w-2xl mx-auto mb-8">
-            {searchResult ? (
-              <div className="p-4 bg-white/20 backdrop-blur-lg rounded-lg">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className="text-lg font-semibold">Search Result:</h3>
-                    <p className="font-medium mt-2">{searchResult.name}</p>
-                    <p className="text-sm text-gray-300">{maskEmail(searchResult.email)}</p>
+          <div className="mb-6">
+            {searchResults.length > 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-4"
+              >
+                {searchResults.map((result, index) => (
+                  <div
+                    key={result.email}
+                    className="p-4 bg-green-900/30 backdrop-blur-lg rounded-lg"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h3 className="text-sm font-semibold">Search Result {index + 1}:</h3>
+                        <p className="text-sm font-medium mt-1">{result.name}</p>
+                        <p className="text-xs text-gray-400">{maskEmail(result.email)}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-green-400">
+                          {result.score > 0 ? `Rank: ${getRank(result)}` : "Not Ranked Yet"}
+                        </p>
+                        <p className="text-xs text-gray-400">Points: {result.score}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-green-400">
-                      {searchResult.score > 0 ? `Rank: ${getRank(searchResult)}` : "Not Ranked Yet"}
-                    </p>
-                    <p className="text-gray-300">Points: {searchResult.score}</p>
-                  </div>
-                </div>
-                <Button onClick={clearSearch} variant="ghost" className="mt-4 text-sm text-gray-300 hover:text-white">
-                  Clear Search
-                </Button>
-              </div>
+                ))}
+              </motion.div>
             ) : (
-              <div className="p-4 bg-white/20 backdrop-blur-lg rounded-lg">
-                <p className="text-gray-300">No ambassador found with that name.</p>
-                <Button onClick={clearSearch} variant="ghost" className="mt-4 text-sm text-gray-300 hover:text-white">
-                  Clear Search
-                </Button>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                className="p-4 bg-green-900/30 backdrop-blur-lg rounded-lg"
+              >
+                <p className="text-sm text-gray-400">No ambassadors found with that name.</p>
+              </motion.div>
             )}
+            <Button
+              onClick={clearSearch}
+              variant="ghost"
+              className="bg-green-700/50 backdrop-blur-lg hover:bg-green-600 text-white mt-4 text-xs"
+            >
+              Clear Search
+            </Button>
           </div>
         )}
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-green-800">
+            <thead className="bg-green-900/30">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-white">Rank</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-white">Name</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-white">Contact</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-white">Points</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-300">Rank</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-300">Name</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-300">Points</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-green-700">
+            <tbody className="divide-y divide-green-800/30">
               {topTen.map((ambassador, index) => (
-                <tr key={ambassador.email} className="hover:bg-green-700/50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-white">#{index + 1}</div>
+                <motion.tr
+                  key={ambassador.email}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: index * 0.05 }}
+                  className="hover:bg-green-900/20 transition-colors"
+                >
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center">
+                      {index === 0 ? (
+                        <Trophy className="h-4 w-4 text-yellow-400 mr-2" />
+                      ) : index === 1 ? (
+                        <Medal className="h-4 w-4 text-gray-300 mr-2" />
+                      ) : index === 2 ? (
+                        <Award className="h-4 w-4 text-amber-600 mr-2" />
+                      ) : (
+                        <Star className="h-4 w-4 text-green-400 mr-2" />
+                      )}
+                      <span className="text-sm text-white">#{index + 1}</span>
+                    </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="text-sm text-white">{ambassador.name}</div>
+                    <div className="text-xs text-gray-400">{maskEmail(ambassador.email)}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-300">{maskEmail(ambassador.email)}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="text-sm font-semibold text-green-400">{ambassador.score}</div>
                   </td>
-                </tr>
+                </motion.tr>
               ))}
             </tbody>
           </table>
@@ -187,4 +227,3 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({ ambassadors, is
 }
 
 export default LeaderboardSection
-

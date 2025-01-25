@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import { motion } from "framer-motion"
 
 interface Particle {
   x: number
@@ -13,6 +14,7 @@ interface Particle {
 export default function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
+  // Particle animation logic
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -82,6 +84,59 @@ export default function ParticleBackground() {
     }
   }, [])
 
-  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none" style={{ opacity: 0.2 }} />
-}
+  // Animated Circles Background Component
+  const AnimatedCircles = () => {
+    return (
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {[...Array(10)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-20 h-20 rounded-full bg-green-500/10"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.2, 0.5, 0.2],
+            }}
+            transition={{
+              duration: Math.random() * 4 + 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+    )
+  }
 
+  return (
+    <>
+      <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none" style={{ opacity: 0.2 }} />
+      <AnimatedCircles />
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(to right, rgba(34, 197, 94, 0.05) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(34, 197, 94, 0.05) 1px, transparent 1px)`,
+          backgroundSize: "40px 40px",
+        }}
+      ></div>
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.1) 0%, rgba(6, 95, 70, 0.3) 50%, rgba(5, 46, 22, 0.8) 100%)",
+        }}
+      ></div>
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "url('/path/to/noise-texture.png')",
+          opacity: 0.1,
+        }}
+      ></div>
+    </>
+  )
+}

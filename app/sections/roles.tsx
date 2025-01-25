@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -29,7 +30,8 @@ const benefits = [
   },
 ]
 
-export function CampusAmbassadorsSection() {
+export function RolesSection() {
+  const router = useRouter();
   const [expandedRole, setExpandedRole] = useState(null)
 
   return (
@@ -62,7 +64,12 @@ export function CampusAmbassadorsSection() {
               initiatives within your educational institution. This is your chance to make a real impact while
               developing valuable skills.
             </p>
-            <Button className="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white">Apply Now</Button>
+            <Button
+                    onClick={() => router.push("./Register")} // Redirect to Register.tsx
+                    className="bg-green-700/50 backdrop-blur-lg hover:bg-green-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+                  >
+                    Apply Now
+                  </Button>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

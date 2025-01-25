@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation"; // Updated import for App Router
-
-
+import { useRouter } from "next/navigation";
 
 interface FormData {
   name: string;
@@ -13,18 +11,17 @@ interface FormData {
 }
 
 interface RegistrationFormProps {
-  onRegister: (newAmbassador: any) => void; // Define the type for `onRegister` prop
+  onRegister: (newAmbassador: any) => void;
 }
 
 const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
-
   const [formData, setFormData] = useState<FormData>({
     name: '',
     phone: '',
     email: '',
     university: '',
   });
-  const router = useRouter(); 
+  const router = useRouter();
   const [error, setError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
@@ -41,9 +38,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
-  
-    console.log('Form Data:', formData); // Debugging
-  
+
     try {
       const response = await fetch('https://igbc-work.onrender.com/api/ambassadors', {
         method: 'POST',
@@ -52,28 +47,31 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
         },
         body: JSON.stringify({ ...formData, score: 0 }),
       });
-  
+
       const data = await response.json();
-      console.log('Response Status:', response.status);
-      console.log('Response Data:', data);
-  
+
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+        if (response.status === 409) {
+          throw new Error('Email is already taken. Please use a different email.');
+        }
+        throw new Error(data.message || 'Registration failed. Please try again.');
       }
-  
+
       onRegister(data);
       setIsRegistered(true);
     } catch (error: any) {
-      console.error('Error:', error.message);
       setError(error.message || 'Registration failed. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
+  const handleShowLeaderboard = () => {
+    router.push('/#leaderboard');
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-      {/* Left Side: Welcome Message and WALL-E Image */}
       <div className="text-center md:text-left">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -86,38 +84,28 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
           <p className="text-gray-300 mb-6">
             Join us in making a difference. Register now to become a part of the SustainX community.
           </p>
-          <motion.img
-            src="/hai.png" // Replace with your WALL-E image path
+          <img
+            src="/hai.png"
             alt="WALL-E"
             className="w-64 h-64 mx-auto md:mx-0 object-contain"
-            animate={{ y: [0, -10, 0] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
           />
         </motion.div>
       </div>
 
-      {/* Right Side: Registration Form */}
       <div className="bg-green-900/20 backdrop-blur-sm rounded-lg shadow-lg p-6">
         {isRegistered ? (
           <div className="text-center">
             <h3 className="text-2xl font-bold text-green-400 mb-4">
               Thank you for registering!
             </h3>
-            <p className="text-gray-300">
-              You will receive an email from us shortly.
-            </p>
-            <br></br>
-        
+            <p className="text-gray-300">You will receive an email from us shortly.</p>
+            <br />
             <Button
-                    onClick={() => router.push("/sections/leaderboard")} // Redirect to Register.tsx
-                    className="bg-green-700/50 backdrop-blur-lg hover:bg-green-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
-                  >
-                    Show Leaderboard
-                  </Button>
+              onClick={handleShowLeaderboard}
+              className="bg-green-700/50 backdrop-blur-lg hover:bg-green-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+            >
+              Show Leaderboard
+            </Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -144,20 +132,16 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
               </div>
             )}
 
-            {/* Form Fields */}
             <div className="relative">
               <input
                 type="text"
                 name="name"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm placeholder-transparent focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 peer"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
                 placeholder="Enter your full name"
                 value={formData.name}
                 onChange={handleChange}
               />
-              <label className="absolute left-3 -top-2.5 bg-white px-1 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-gray-600">
-                Full Name
-              </label>
             </div>
 
             <div className="relative">
@@ -165,14 +149,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
                 type="tel"
                 name="phone"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm placeholder-transparent focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 peer"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
                 placeholder="Enter your phone number"
                 value={formData.phone}
                 onChange={handleChange}
               />
-              <label className="absolute left-3 -top-2.5 bg-white px-1 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-gray-600">
-                Phone Number
-              </label>
             </div>
 
             <div className="relative">
@@ -180,14 +161,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
                 type="email"
                 name="email"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm placeholder-transparent focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 peer"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
                 placeholder="Enter your email address"
                 value={formData.email}
                 onChange={handleChange}
               />
-              <label className="absolute left-3 -top-2.5 bg-white px-1 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-gray-600">
-                Email Address
-              </label>
             </div>
 
             <div className="relative">
@@ -195,15 +173,13 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
                 type="text"
                 name="university"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm placeholder-transparent focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 peer"
-                placeholder="Enter your Collage name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                placeholder="Enter your College name"
                 value={formData.university}
                 onChange={handleChange}
               />
-              <label className="absolute left-3 -top-2.5 bg-white px-1 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-gray-600">
-               Collage
-              </label>
             </div>
+
             <div>
               <button
                 type="submit"

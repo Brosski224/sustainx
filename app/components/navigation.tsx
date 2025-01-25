@@ -8,8 +8,10 @@ import { Button } from "@/components/ui/button"
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrollDirection, setScrollDirection] = useState("up")
+  const [isScrollingDown, setIsScrollingDown] = useState(false)
   const controls = useAnimation()
 
+  // Handle scroll direction
   useEffect(() => {
     let lastScrollY = window.scrollY
 
@@ -17,8 +19,10 @@ export default function Navigation() {
       const currentScrollY = window.scrollY
       if (currentScrollY > lastScrollY) {
         setScrollDirection("down")
+        setIsScrollingDown(true)
       } else {
         setScrollDirection("up")
+        setIsScrollingDown(false)
       }
       lastScrollY = currentScrollY
     }
@@ -27,24 +31,36 @@ export default function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  // Animate navigation based on scroll direction
   useEffect(() => {
     if (scrollDirection === "down") {
-      controls.start({ opacity: 0, transition: { duration: 0.3 } })
+      controls.start({ opacity: 0, y: -20, transition: { duration: 0.3 } })
     } else {
-      controls.start({ opacity: 1, transition: { duration: 0.3 } })
+      controls.start({ opacity: 1, y: 0, transition: { duration: 0.3 } })
     }
   }, [scrollDirection, controls])
+
+  // Smooth scroll to section
+  const handleLinkClick = (id: string) => {
+    const section = document.getElementById(id)
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" })
+    }
+    setIsOpen(false) // Close mobile menu after clicking a link
+  }
 
   return (
     <nav className="fixed w-full z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           {/* Logo on the left corner */}
-          <motion.a 
-            href="https://www.igbccusat.com/"
+          <motion.a
+            href="https://www.igbccusat.com"
             className="text-green-400 text-xl font-bold"
+            animate={isScrollingDown ? { opacity: 0 } : { opacity: 1 }}
+            transition={{ duration: 0.3 }}
           >
-            <div className=" flex items-center">
+            <div className="flex items-center">
               <img
                 src="/igbc.png"
                 alt="igbc Logo"
@@ -56,18 +72,22 @@ export default function Navigation() {
             </div>
           </motion.a>
 
-          {/* Desktop Navigation - Centered with Transparent Box */}
+          {/* Desktop Navigation - Centered */}
           <motion.div
-            className="hidden md:flex flex-grow justify-center space-x-8 bg-green-900/50 backdrop-blur-lg rounded-lg px-6 py-2 w-auto"
+            className="hidden md:flex flex-grow justify-center space-x-8"
             animate={controls}
           >
-            {["About", "Roles", "Prizes", "Leaderboard"].map((item) => (
+            {["Home", "About", "Leaderboard"].map((item) => (
               <motion.a
                 key={item}
                 href={`#${item.toLowerCase()}`}
                 className="text-green-300 hover:text-white transition-colors"
                 whileHover={{ y: -2 }}
                 whileTap={{ y: 0 }}
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleLinkClick(item.toLowerCase())
+                }}
               >
                 {item}
               </motion.a>
@@ -76,8 +96,10 @@ export default function Navigation() {
 
           {/* SustainX Logo on the right corner */}
           <motion.a
-            href="#" // Add the desired link here
+            href="https://sustainx.igbccusat.com"
             className="text-green-400 text-xl font-bold"
+            animate={isScrollingDown ? { opacity: 0 } : { opacity: 1 }}
+            transition={{ duration: 0.3 }}
           >
             <div className="flex items-center">
               <img
@@ -92,7 +114,12 @@ export default function Navigation() {
           </motion.a>
 
           {/* Mobile Menu Button */}
-          <Button className="md:hidden text-green-300" variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
+          <Button
+            className="md:hidden text-green-300"
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(!isOpen)}
+          >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
         </div>
@@ -108,13 +135,16 @@ export default function Navigation() {
         <div className="bg-green-900/90 backdrop-blur-lg">
           <div className="container mx-auto px-4 py-4">
             <div className="flex flex-col space-y-4">
-              {["About", "Roles", "Prizes", "Leaderboard"].map((item) => (
+              {["Home", "About", "Leaderboard"].map((item) => (
                 <motion.a
                   key={item}
                   href={`#${item.toLowerCase()}`}
                   className="text-green-300 hover:text-white transition-colors px-4 py-2"
                   whileHover={{ x: 4 }}
-                  onClick={() => setIsOpen(false)}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleLinkClick(item.toLowerCase())
+                  }}
                 >
                   {item}
                 </motion.a>
