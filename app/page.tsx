@@ -1,7 +1,8 @@
 "use client"; // Ensure this is a client component
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useRouter } from "next/navigation"; // Updated import for App Router
+import { motion, useScroll, useTransform } from "framer-motion";
 import ParticleBackground from "./components/particle-background";
 import Navigation from "./components/navigation";
 import { Button } from "@/components/ui/button";
@@ -11,9 +12,9 @@ import { CampusAmbassadorsSection } from "./sections/campus-ambassadors";
 import LeaderboardSection from "./sections/leaderboard";
 import Footer from "./components/footer";
 import { Trophy, Medal, Award } from "lucide-react";
-import { Leaf, Users, Building2, Globe2 } from "lucide-react";
 
 export default function Home() {
+  const router = useRouter(); // Initialize the router from next/navigation
   const containerRef = useRef<HTMLDivElement>(null);
   const [ambassadors, setAmbassadors] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +32,7 @@ export default function Home() {
         setAmbassadors(data);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setError(error.message);
+      
       } finally {
         setIsLoading(false);
       }
@@ -55,86 +56,154 @@ export default function Home() {
     return () => window.removeEventListener("mousemove", updateMousePosition);
   }, []);
 
+  // Scroll animation for the logo
+  const { scrollYProgress } = useScroll();
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.5]); // Zoom out effect
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]); // Fade out effect
+
+  // Animated Circles Background Component
+  const AnimatedCircles = () => {
+    return (
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {[...Array(10)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-20 h-20 rounded-full bg-green-500/10"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.2, 0.5, 0.2],
+            }}
+            transition={{
+              duration: Math.random() * 4 + 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div
       ref={containerRef}
       className="relative min-h-screen bg-gradient-to-b from-green-950 via-green-900 to-green-950 overflow-hidden"
     >
+      {/* Enhanced Background Elements */}
       <ParticleBackground />
+      <AnimatedCircles />
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(to right, rgba(34, 197, 94, 0.05) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(34, 197, 94, 0.05) 1px, transparent 1px)`,
+          backgroundSize: "40px 40px",
+        }}
+      ></div>
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.1) 0%, rgba(6, 95, 70, 0.3) 50%, rgba(5, 46, 22, 0.8) 100%)",
+        }}
+      ></div>
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "url('/path/to/noise-texture.png')",
+          opacity: 0.1,
+        }}
+      ></div>
+
+      {/* Navigation (hidden initially) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 1 }} // Fade in after logo animation
+        className="relative z-20"
+      >
+        <Navigation />
+      </motion.div>
 
       <div className="relative z-10">
-        <Navigation />
-
         <main>
-          {/* Enhanced Hero Section */}
-          <section className="min-h-screen flex flex-col items-center justify-center text-center px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="relative w-full max-w-6xl mx-auto"
-            >
-              {/* Enhanced Logo Container */}
-              <motion.div
-                className="relative w-96 h-96 md:w-[32rem] md:h-[32rem] mx-auto mb-8"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                {/* Centered and Enlarged Symbol */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <img
-                    src="/walle.png"
-                    alt="walle Logo"
-                    className="w-full h-full object-contain transform hover:scale-105 transition-transform duration-300"
-                    onError={(e) => {
-                      console.error("Image failed to load", e);
-                    }}
-                  />
-                </div>
-              </motion.div>
-
-              {/* Enhanced Heading */}
-              <motion.h2
-                className="text-3xl md:text-4xl font-semibold text-green-400 mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                Building Tomorrow
-              </motion.h2>
-
-              {/* Enhanced Subheading and Button */}
-              <div className="space-y-6">
-                <motion.p
-                  className="text-green-300 text-2xl md:text-3xl"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6 }}
-                >
-                  Join the flagship annual conference by IGBC Student Chapter of CUSAT, where sustainability meets innovation.
-                </motion.p>
+          {/* Walle Section */}
+          <section className="min-h-screen flex items-center justify-center px-4 md:px-8">
+            <div className="container mx-auto flex flex-col md:flex-row items-center gap-8">
+              {/* Text on the Left */}
+              <div className="flex-1 space-y-6 text-center md:text-left">
+                {/* "CAMPUS AMBASSADOR" Text (Visible Initially) */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.8 }}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 1 }}
+                >
+                  <span className="text-2xl md:text-4xl font-bold text-white">Be the</span>
+                </motion.div>
+                <motion.h1
+                  className="text-4xl md:text-6xl font-bold text-green-400"
+                  initial={{ opacity: 1 }}
+                  animate={{ opacity: 1 }}
+                >
+                  CAMPUS AMBASSADOR
+                </motion.h1>
+
+                {/* "Be the" and "of SUSTAINX" Text (Fade In Later) */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 1 }}
+                >
+                  <span className="text-2xl md:text-4xl font-bold text-white">of SUSTAINX</span>
+                </motion.div>
+
+                {/* "Apply Now" Button (Fade In Later) */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: 1.5, duration: 1 }}
                 >
                   <Button
-                    size="lg"
-                    className="bg-white text-green-700 px-8 py-3 rounded-full font-semibold text-lg hover:bg-green-100 transition-colors inline-flex items-center space-x-2 hover:shadow-lg hover:scale-105 transform transition duration-300"
+                    onClick={() => router.push("./Register")} // Redirect to Register.tsx
+                    className="bg-green-700/50 backdrop-blur-lg hover:bg-green-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
                   >
-                    <Users className="w-6 h-6" />
-                    Become an Ambassador
+                    Apply Now
                   </Button>
                 </motion.div>
+                
               </div>
-            </motion.div>
+
+              {/* Walle Image on the Right with Animation */}
+              <motion.div
+                className="flex-1 flex justify-center md:justify-end mt-8 md:mt-0"
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 2 }}
+              >
+                <motion.img
+                  src="/walle.png" // Replace with the correct path to your image
+                  alt="Walle"
+                  className="w-64 h-64 md:w-96 md:h-96 object-contain"
+                  animate={{ y: [0, -10, 0] }} // Floating animation
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              </motion.div>
+            </div>
           </section>
 
+          {/* Other Sections */}
           <AboutSection />
           <CampusAmbassadorsSection />
 
-          {/* New Prizes & Benefits Section */}
+          {/* Prizes & Benefits Section */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -143,30 +212,42 @@ export default function Home() {
             className="py-20 relative"
           >
             <div className="container mx-auto px-4">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">Prizes & Benefits</h2>
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">
+                Prizes & Benefits
+              </h2>
               <div className="grid md:grid-cols-3 gap-8">
                 <Card className="bg-green-900/30 backdrop-blur-sm border-green-500/20 hover:border-green-500/40 transition-all duration-300">
                   <CardContent className="p-6 text-center">
                     <Trophy className="w-16 h-16 text-green-400 mx-auto mb-4" />
-                    <h3 className="text-2xl font-semibold text-white mb-2">Top 3 Performers</h3>
+                    <h3 className="text-2xl font-semibold text-white mb-2">
+                      Top 3 Performers
+                    </h3>
                     <p className="text-green-300">
-                      Cash prizes worth ₹20,000 as a token of recognition for outstanding efforts.
+                      Cash prizes worth ₹20,000 as a token of recognition for
+                      outstanding efforts.
                     </p>
                   </CardContent>
                 </Card>
                 <Card className="bg-green-900/30 backdrop-blur-sm border-green-500/20 hover:border-green-500/40 transition-all duration-300">
                   <CardContent className="p-6 text-center">
                     <Medal className="w-16 h-16 text-green-400 mx-auto mb-4" />
-                    <h3 className="text-2xl font-semibold text-white mb-2">Top 10 Performers</h3>
-                    <p className="text-green-300">Exclusive goodies and premium SustainX merchandise.</p>
+                    <h3 className="text-2xl font-semibold text-white mb-2">
+                      Top 10 Performers
+                    </h3>
+                    <p className="text-green-300">
+                      Exclusive goodies and premium SustainX merchandise.
+                    </p>
                   </CardContent>
                 </Card>
                 <Card className="bg-green-900/30 backdrop-blur-sm border-green-500/20 hover:border-green-500/40 transition-all duration-300">
                   <CardContent className="p-6 text-center">
                     <Award className="w-16 h-16 text-green-400 mx-auto mb-4" />
-                    <h3 className="text-2xl font-semibold text-white mb-2">Top 50 Performers</h3>
+                    <h3 className="text-2xl font-semibold text-white mb-2">
+                      Top 50 Performers
+                    </h3>
                     <p className="text-green-300">
-                      Special Certificates of Excellence celebrating exceptional contributions.
+                      Special Certificates of Excellence celebrating exceptional
+                      contributions.
                     </p>
                   </CardContent>
                 </Card>
@@ -174,7 +255,7 @@ export default function Home() {
             </div>
           </motion.section>
 
-          {/* Pass ambassadors data to LeaderboardSection */}
+          {/* Leaderboard Section */}
           <LeaderboardSection ambassadors={ambassadors} isLoading={isLoading} />
         </main>
 

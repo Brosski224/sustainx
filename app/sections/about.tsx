@@ -1,8 +1,6 @@
 "use client"
 
 import { motion } from "framer-motion"
-import Image from "next/image"
-import { Leaf, Users, Building2, Globe2 } from "lucide-react"
 
 const features = [
   {
@@ -23,14 +21,11 @@ export function AboutSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">About SustainX</h2>
-          <p className="text-green-300 text-lg md:text-xl max-w-2xl mx-auto">
-            SustainX: Building Tomorrow is the flagship annual conference organized by the IGBC Student Chapter of CUSAT,
-            a vibrant part of the Confederation of Indian Industry (CII). The event serves as a platform to champion
-            the importance of sustainability and green practices. Through interactive sessions, workshops, and engaging activities, 
-            SustainX aims to empower participants to integrate eco-friendly practices into their personal and professional lives, 
-            contributing to a sustainable future for all.
+          <p className="text-green-300 text-lg md:text-xl max-w-2xl mx-auto">SustainX: Building Tomorrow, organized by the IGBC Student Chapter of CUSAT under CII, champions sustainability and green practices. Through sessions, workshops, and activities, it empowers participants to adopt eco-friendly practices for a sustainable future.
+  
           </p>
         </motion.div>
+        
 
         <div className="flex justify-center">
           {features.map((feature, index) => (

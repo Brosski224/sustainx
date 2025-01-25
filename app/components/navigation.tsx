@@ -40,11 +40,11 @@ export default function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           {/* Logo on the left corner */}
-          <motion.a
+          <motion.a 
             href="https://www.igbccusat.com/"
             className="text-green-400 text-xl font-bold"
           >
-            <div className="flex items-center">
+            <div className=" flex items-center">
               <img
                 src="/igbc.png"
                 alt="igbc Logo"
@@ -61,7 +61,7 @@ export default function Navigation() {
             className="hidden md:flex flex-grow justify-center space-x-8 bg-green-900/50 backdrop-blur-lg rounded-lg px-6 py-2 w-auto"
             animate={controls}
           >
-            {["About", "Events", "Speakers", "Contact"].map((item) => (
+            {["About", "Roles", "Prizes", "Leaderboard"].map((item) => (
               <motion.a
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -108,7 +108,7 @@ export default function Navigation() {
         <div className="bg-green-900/90 backdrop-blur-lg">
           <div className="container mx-auto px-4 py-4">
             <div className="flex flex-col space-y-4">
-              {["About", "Events", "Speakers", "Contact"].map((item) => (
+              {["About", "Roles", "Prizes", "Leaderboard"].map((item) => (
                 <motion.a
                   key={item}
                   href={`#${item.toLowerCase()}`}
