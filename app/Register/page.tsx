@@ -1,5 +1,6 @@
-"use client";
-import React, { useRef } from "react";
+"use client"; // Add this directive at the top
+
+import React, { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import ParticleBackground from "../components/particle-background";
 import RegistrationForm from "./RegistrationForm";
@@ -36,6 +37,31 @@ const AnimatedCircles = () => {
 
 const Register: React.FC<RegisterProps> = ({ onRegister = () => {} }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Set the page title
+    document.title = "Campus Ambassador";
+
+    // Set the meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "Be the campus ambassador of SUSTAINX");
+    } else {
+      const newMetaDescription = document.createElement("meta");
+      newMetaDescription.name = "description";
+      newMetaDescription.content = "Be the campus ambassador of SUSTAINX";
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Set the favicon
+    const faviconLink = document.querySelector("link[rel='icon']");
+    if (!faviconLink) {
+      const newFaviconLink = document.createElement("link");
+      newFaviconLink.rel = "icon";
+      newFaviconLink.href = "/favicon.ico"; // Path to your favicon
+      document.head.appendChild(newFaviconLink);
+    }
+  }, []);
 
   console.log("onRegister in Register:", onRegister); // Debugging
 
