@@ -1,53 +1,56 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion, useAnimation } from "framer-motion"
-import { Menu, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function Navigation() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [scrollDirection, setScrollDirection] = useState("up")
-  const [isScrollingDown, setIsScrollingDown] = useState(false)
-  const controls = useAnimation()
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState("up");
+  const [isScrollingDown, setIsScrollingDown] = useState(false);
+  const controls = useAnimation();
 
   // Handle scroll direction
   useEffect(() => {
-    let lastScrollY = window.scrollY
+    let lastScrollY = window.scrollY;
 
     const handleScroll = () => {
-      const currentScrollY = window.scrollY
+      const currentScrollY = window.scrollY;
       if (currentScrollY > lastScrollY) {
-        setScrollDirection("down")
-        setIsScrollingDown(true)
+        setScrollDirection("down");
+        setIsScrollingDown(true);
       } else {
-        setScrollDirection("up")
-        setIsScrollingDown(false)
+        setScrollDirection("up");
+        setIsScrollingDown(false);
       }
-      lastScrollY = currentScrollY
-    }
+      lastScrollY = currentScrollY;
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Animate navigation based on scroll direction
   useEffect(() => {
     if (scrollDirection === "down") {
-      controls.start({ opacity: 0, y: -20, transition: { duration: 0.3 } })
+      controls.start({ opacity: 0, y: -20, transition: { duration: 0.3 } });
     } else {
-      controls.start({ opacity: 1, y: 0, transition: { duration: 0.3 } })
+      controls.start({ opacity: 1, y: 0, transition: { duration: 0.3 } });
     }
-  }, [scrollDirection, controls])
+  }, [scrollDirection, controls]);
 
   // Smooth scroll to section
   const handleLinkClick = (id: string) => {
-    const section = document.getElementById(id)
+    console.log("Scrolling to section:", id);
+    const section = document.getElementById(id);
     if (section) {
-      section.scrollIntoView({ behavior: "smooth" })
+      section.scrollIntoView({ behavior: "smooth" });
+    } else {
+      console.error("Section not found:", id);
     }
-    setIsOpen(false) // Close mobile menu after clicking a link
-  }
+    setIsOpen(false); // Close mobile menu after clicking a link
+  };
 
   return (
     <nav className="fixed w-full z-50">
@@ -66,7 +69,7 @@ export default function Navigation() {
                 alt="igbc Logo"
                 className="w-24 h-24 object-contain transform hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
-                  console.error("Image failed to load", e)
+                  console.error("Image failed to load", e);
                 }}
               />
             </div>
@@ -85,8 +88,8 @@ export default function Navigation() {
                 whileHover={{ y: -2 }}
                 whileTap={{ y: 0 }}
                 onClick={(e) => {
-                  e.preventDefault()
-                  handleLinkClick(item.toLowerCase())
+                  e.preventDefault();
+                  handleLinkClick(item.toLowerCase());
                 }}
               >
                 {item}
@@ -107,7 +110,7 @@ export default function Navigation() {
                 alt="SustainX Logo"
                 className="w-24 h-24 object-contain transform hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
-                  console.error("Image failed to load", e)
+                  console.error("Image failed to load", e);
                 }}
               />
             </div>
@@ -142,8 +145,12 @@ export default function Navigation() {
                   className="text-green-300 hover:text-white transition-colors px-4 py-2"
                   whileHover={{ x: 4 }}
                   onClick={(e) => {
-                    e.preventDefault()
-                    handleLinkClick(item.toLowerCase())
+                    e.preventDefault();
+                    handleLinkClick(item.toLowerCase());
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    handleLinkClick(item.toLowerCase());
                   }}
                 >
                   {item}
@@ -154,5 +161,5 @@ export default function Navigation() {
         </div>
       </motion.div>
     </nav>
-  )
+  );
 }

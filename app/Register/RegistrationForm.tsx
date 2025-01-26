@@ -7,6 +7,7 @@ interface FormData {
   name: string;
   phone: string;
   email: string;
+  confirmEmail: string; // New field for re-entering email
   university: string;
 }
 
@@ -19,6 +20,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
     name: '',
     phone: '',
     email: '',
+    confirmEmail: '', // Initialize confirmEmail
     university: '',
   });
   const router = useRouter();
@@ -37,6 +39,13 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
+
+    // Validate email and confirmEmail match
+    if (formData.email !== formData.confirmEmail) {
+      setError('Emails do not match. Please re-enter your email.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -70,6 +79,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
     router.push('/#leaderboard');
   };
 
+  const handleBackToHome = () => {
+    router.push('/'); // Navigate to the home page
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
       <div className="text-center md:text-left">
@@ -100,12 +113,20 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
             </h3>
             <p className="text-gray-300">You will receive an email from us shortly.</p>
             <br />
-            <Button
-              onClick={handleShowLeaderboard}
-              className="bg-green-700/50 backdrop-blur-lg hover:bg-green-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
-            >
-              Show Leaderboard
-            </Button>
+            <div className="flex flex-col space-y-4">
+              <Button
+                onClick={handleShowLeaderboard}
+                className="bg-green-700/50 backdrop-blur-lg hover:bg-green-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+              >
+                Show Leaderboard
+              </Button>
+              <Button
+                onClick={handleBackToHome}
+                className="bg-gray-700/50 backdrop-blur-lg hover:bg-gray-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+              >
+                Back to Home
+              </Button>
+            </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -164,6 +185,18 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
                 placeholder="Enter your email address"
                 value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="relative">
+              <input
+                type="email"
+                name="confirmEmail"
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                placeholder="Re-enter your email address"
+                value={formData.confirmEmail}
                 onChange={handleChange}
               />
             </div>
