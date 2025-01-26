@@ -1,64 +1,90 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
-import { motion, useScroll, useTransform } from "framer-motion"
-import ParticleBackground from "./components/particle-background"
-import Navigation from "./components/navigation"
-import Home from "./sections/home"
-import Prizes from "./sections/prizes"
-import { AboutSection } from "./sections/about"
-import { RolesSection } from "./sections/roles"
-import LeaderboardSection from "./sections/leaderboard"
-import Footer from "./components/footer"
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion, useScroll, useTransform } from "framer-motion";
+import ParticleBackground from "./components/particle-background";
+import Navigation from "./components/navigation";
+import Home from "./sections/home";
+import Prizes from "./sections/prizes";
+import { AboutSection } from "./sections/about";
+import { RolesSection } from "./sections/roles";
+import LeaderboardSection from "./sections/leaderboard";
+import Footer from "./components/footer";
 
 export default function Page() {
-  const router = useRouter()
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [ambassadors, setAmbassadors] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const router = useRouter();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [ambassadors, setAmbassadors] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Set page title, description, and favicon
+  useEffect(() => {
+    // Set the page title
+    document.title = "Campus Ambassador";
+
+    // Set the meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "Be the campus ambassador of SUSTAINX");
+    } else {
+      const newMetaDescription = document.createElement("meta");
+      newMetaDescription.name = "description";
+      newMetaDescription.content = "Be the campus ambassador of SUSTAINX";
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Set the favicon
+    const faviconLink = document.querySelector("link[rel='icon']");
+    if (!faviconLink) {
+      const newFaviconLink = document.createElement("link");
+      newFaviconLink.rel = "icon";
+      newFaviconLink.href = "/favicon.ico"; // Path to your favicon
+      document.head.appendChild(newFaviconLink);
+    }
+  }, []);
 
   // Fetch ambassadors data from the backend
   useEffect(() => {
     const fetchAmbassadors = async () => {
       try {
-        const response = await fetch("https://igbc-work.onrender.com/api/ambassadors")
+        const response = await fetch("https://igbc-work.onrender.com/api/ambassadors");
         if (!response.ok) {
-          throw new Error("Failed to fetch ambassadors")
+          throw new Error("Failed to fetch ambassadors");
         }
-        const data = await response.json()
-        setAmbassadors(data)
+        const data = await response.json();
+        setAmbassadors(data);
       } catch (error) {
-        console.error("Error fetching data:", error)
-        setError(error.message)
+        console.error("Error fetching data:", error);
+        setError(error.message);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchAmbassadors()
-  }, [])
+    fetchAmbassadors();
+  }, []);
 
   // Handle mouse position for gradient effect
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
-      if (!containerRef.current) return
-      const rect = containerRef.current.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
-      containerRef.current.style.setProperty("--mouse-x", `${x}px`)
-      containerRef.current.style.setProperty("--mouse-y", `${y}px`)
-    }
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      containerRef.current.style.setProperty("--mouse-x", `${x}px`);
+      containerRef.current.style.setProperty("--mouse-y", `${y}px`);
+    };
 
-    window.addEventListener("mousemove", updateMousePosition)
-    return () => window.removeEventListener("mousemove", updateMousePosition)
-  }, [])
+    window.addEventListener("mousemove", updateMousePosition);
+    return () => window.removeEventListener("mousemove", updateMousePosition);
+  }, []);
 
   // Scroll animation for the logo
-  const { scrollYProgress } = useScroll()
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.5]) // Zoom out effect
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]) // Fade out effect
+  const { scrollYProgress } = useScroll();
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.5]); // Zoom out effect
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]); // Fade out effect
 
   return (
     <div
@@ -80,14 +106,14 @@ export default function Page() {
 
       <div className="relative z-10">
         <main>
-        <section id="home">
-          <Home />
+          <section id="home">
+            <Home />
           </section>
           <AboutSection />
           <RolesSection />
           <Prizes />
           <section id="leaderboard">
-          <LeaderboardSection ambassadors={ambassadors} isLoading={isLoading} />
+            <LeaderboardSection ambassadors={ambassadors} isLoading={isLoading} />
           </section>
         </main>
 
@@ -105,5 +131,5 @@ export default function Page() {
         ></div>
       </div>
     </div>
-  )
+  );
 }
