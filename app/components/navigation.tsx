@@ -1,15 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrollDirection, setScrollDirection] = useState("up");
   const [isScrollingDown, setIsScrollingDown] = useState(false);
-  const controls = useAnimation();
 
   // Handle scroll direction
   useEffect(() => {
@@ -18,10 +16,8 @@ export default function Navigation() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       if (currentScrollY > lastScrollY) {
-        setScrollDirection("down");
         setIsScrollingDown(true);
       } else {
-        setScrollDirection("up");
         setIsScrollingDown(false);
       }
       lastScrollY = currentScrollY;
@@ -30,15 +26,6 @@ export default function Navigation() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Animate navigation based on scroll direction
-  useEffect(() => {
-    if (scrollDirection === "down") {
-      controls.start({ opacity: 0, y: -20, transition: { duration: 0.3 } });
-    } else {
-      controls.start({ opacity: 1, y: 0, transition: { duration: 0.3 } });
-    }
-  }, [scrollDirection, controls]);
 
   // Smooth scroll to section
   const handleLinkClick = (id: string) => {
@@ -52,6 +39,10 @@ export default function Navigation() {
     setIsOpen(false); // Close mobile menu after clicking a link
   };
 
+  if (isScrollingDown) {
+    return null;
+  }
+
   return (
     <nav className="fixed w-full z-50">
       <div className="container mx-auto px-4">
@@ -60,8 +51,6 @@ export default function Navigation() {
           <motion.a
             href="https://www.igbccusat.com"
             className="text-green-400 text-xl font-bold"
-            animate={isScrollingDown ? { opacity: 0 } : { opacity: 1 }}
-            transition={{ duration: 0.3 }}
           >
             <div className="flex items-center">
               <img
@@ -76,10 +65,7 @@ export default function Navigation() {
           </motion.a>
 
           {/* Desktop Navigation - Centered */}
-          <motion.div
-            className="hidden md:flex flex-grow justify-center space-x-8"
-            animate={controls}
-          >
+          <motion.div className="hidden md:flex flex-grow justify-center space-x-8">
             {["Home", "About", "Leaderboard"].map((item) => (
               <motion.a
                 key={item}
@@ -101,8 +87,6 @@ export default function Navigation() {
           <motion.a
             href="https://sustainx.igbccusat.com"
             className="text-green-400 text-xl font-bold"
-            animate={isScrollingDown ? { opacity: 0 } : { opacity: 1 }}
-            transition={{ duration: 0.3 }}
           >
             <div className="flex items-center">
               <img
