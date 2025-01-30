@@ -7,25 +7,6 @@ import { Button } from "@/components/ui/button";
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isScrollingDown, setIsScrollingDown] = useState(false);
-
-  // Handle scroll direction
-  useEffect(() => {
-    let lastScrollY = window.scrollY;
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY) {
-        setIsScrollingDown(true);
-      } else {
-        setIsScrollingDown(false);
-      }
-      lastScrollY = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   // Smooth scroll to section
   const handleLinkClick = (id: string) => {
@@ -39,12 +20,8 @@ export default function Navigation() {
     setIsOpen(false); // Close mobile menu after clicking a link
   };
 
-  if (isScrollingDown) {
-    return null;
-  }
-
   return (
-    <nav className="fixed w-full z-50">
+    <nav className="w-full z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           {/* Logo on the left corner */}
