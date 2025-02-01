@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
@@ -7,10 +7,10 @@ interface FormData {
   name: string;
   phone: string;
   email: string;
-  confirmEmail: string; // New field for re-entering email
+  confirmEmail: string;
   university: string;
-  branch: string; // New field for branch
-  yearOfGraduation: string; // New field for year of graduation
+  branch: string;
+  yearOfGraduation: string;
 }
 
 interface RegistrationFormProps {
@@ -22,15 +22,68 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
     name: '',
     phone: '',
     email: '',
-    confirmEmail: '', // Initialize confirmEmail
+    confirmEmail: '',
     university: '',
-    branch: '', // Initialize branch
-    yearOfGraduation: '', // Initialize year of graduation
+    branch: '',
+    yearOfGraduation: '',
   });
   const router = useRouter();
   const [error, setError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
+  const [showButtons, setShowButtons] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const messages = [
+    "👋 Hi there! Ready to join the mission?",
+    "🌟 Let's make a difference together!",
+    "🚀 Welcome aboard, future ambassador!",
+    "🌍 Your journey to sustainability starts now!",
+    "💚 Thanks for joining us!",
+    "🌱 Every step counts towards a greener future!",
+    "🌞 Shine bright and make an impact!",
+    "🌿 Together, we can change the world!",
+    "🌈 Your efforts make a colorful difference!",
+    "🌻 Let's grow a sustainable tomorrow!",
+    "✨ Your passion is the spark for a brighter future!",
+
+"🌿 Small actions today, big impact tomorrow!",
+
+"🌊 Dive into change and ride the wave of sustainability!",
+
+"🌳 Plant the seeds of hope for generations to come!",
+
+"💡 Innovation + passion = a sustainable revolution!",
+
+"🌏 Be the change you wish to see in the world!",
+
+"🌟 Your commitment lights the way for others!",
+
+"🌻 Bloom where you’re planted and inspire growth!",
+
+"🌞 Harness the power of the sun and your potential!",
+
+"🌱 Sustainability starts with you—let’s grow together!",
+
+"🌍 Every choice matters. Choose wisely, choose green!",
+
+"🌈 Dream big, act boldly, and paint the world green!",
+
+"🌿 Nature thanks you for being its champion!",
+
+"🚀 Blast off into a future full of hope and change!",
+
+"🌎 Protect today, preserve tomorrow!",
+
+"🌻 Your efforts are the roots of a thriving planet!",
+
+"🌞 Brighten the world with your sustainable actions!",
+
+"🌍 Let’s create a legacy of love for the Earth!",
+
+"🌿 Green is not just a color—it’s a way of life!",
+    
+  ];
+  const [messageIndex, setMessageIndex] = useState<number>(0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -44,7 +97,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
     e.preventDefault();
     setError('');
 
-    // Validate email and confirmEmail match
     if (formData.email !== formData.confirmEmail) {
       setError('Emails do not match. Please re-enter your email.');
       return;
@@ -84,11 +136,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
   };
 
   const handleBackToHome = () => {
-    router.push('/'); // Navigate to the home page
+    router.push('/');
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center min-h-screen p-8 bg-gradient-to-br from-green-900 to-gray-900">
       <div className="text-center md:text-left">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -101,43 +153,92 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
           <p className="text-gray-300 mb-6">
             Join us in making a difference. Register now to become a part of the SustainX community.
           </p>
-          <img
-            src="/hai.png"
-            alt="WALL-E"
-            className="w-64 h-64 mx-auto md:mx-0 object-contain"
-          />
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onHoverStart={() => {
+              setIsHovered(true);
+              setMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
+            }}
+            onHoverEnd={() => setIsHovered(false)}
+          >
+            <img
+              src="/hai.png"
+              alt="WALL-E"
+              className="w-64 h-64 mx-auto md:mx-0 object-contain cursor-pointer"
+            />
+          </motion.div>
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="mt-4 text-green-400"
+              >
+                <p>{messages[messageIndex]}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
 
       <div className="bg-green-900/20 backdrop-blur-sm rounded-lg shadow-lg p-6">
         {isRegistered ? (
           <div className="text-center">
-            <h3 className="text-2xl font-bold text-green-400 mb-4">
-              Thank you for registering!
-            </h3>
-            <p className="text-gray-300">You will receive an email from us shortly.</p>
-            <p className="text-gray-300 font-bold">IMPORTANT: Don't forget to peek into your promotions tab for our welcome email!</p>
-            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h3 className="text-2xl font-bold text-green-400 mb-4">
+                Thank you for registering!
+              </h3>
+              <p className="text-gray-300">You will receive an email from us shortly.</p>
+              <br />
+              <div className="bg-green-800 p-4 rounded-lg shadow-lg">
+                <p className="text-gray-300 font-bold">Don't forget to peek into your promotions tab for our welcome email!</p>
+                <br />
+                <Button
+                  onClick={() => setShowButtons(true)}
+                  className="bg-green-700/50 backdrop-blur-lg hover:bg-green-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+                >
+                  OK
+                </Button>
+              </div>
+            </motion.div>
             <br />
-            <div className="flex flex-col space-y-4">
-              <Button
-                onClick={handleShowLeaderboard}
-                className="bg-green-700/50 backdrop-blur-lg hover:bg-green-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+            {showButtons && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-col space-y-4"
               >
-                Show Leaderboard
-              </Button>
-              <Button
-                onClick={handleBackToHome}
-                className="bg-gray-700/50 backdrop-blur-lg hover:bg-gray-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
-              >
-                Back to Home
-              </Button>
-            </div>
+                <Button
+                  onClick={handleShowLeaderboard}
+                  className="bg-green-700/50 backdrop-blur-lg hover:bg-green-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+                >
+                  Show Leaderboard
+                </Button>
+                <Button
+                  onClick={handleBackToHome}
+                  className="bg-gray-700/50 backdrop-blur-lg hover:bg-gray-600 text-white text-lg px-8 py-4 md:px-10 md:py-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+                >
+                  Back to Home
+                </Button>
+              </motion.div>
+            )}
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="bg-red-50 border-l-4 border-red-400 p-4 mb-6"
+              >
                 <div className="flex">
                   <div className="flex-shrink-0">
                     <svg
@@ -156,94 +257,34 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
                     <p className="text-sm text-red-700">{error}</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             )}
 
-            <div className="relative">
-              <input
-                type="text"
-                name="name"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
-                placeholder="Enter your full name"
-                value={formData.name}
-                onChange={handleChange}
-              />
-            </div>
+            {['name', 'phone', 'email', 'confirmEmail', 'Collage', 'branch', 'yearOfGraduation'].map((field, index) => (
+              <motion.div
+                key={field}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="relative"
+              >
+                <input
+                  type={field === 'email' || field === 'confirmEmail' ? 'email' : field === 'phone' ? 'tel' : 'text'}
+                  name={field}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                  placeholder={`Enter your ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
+                  value={formData[field as keyof FormData]}
+                  onChange={handleChange}
+                />
+              </motion.div>
+            ))}
 
-            <div className="relative">
-              <input
-                type="tel"
-                name="phone"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
-                placeholder="Enter your phone number"
-                value={formData.phone}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="relative">
-              <input
-                type="email"
-                name="email"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
-                placeholder="Enter your email address"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="relative">
-              <input
-                type="email"
-                name="confirmEmail"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
-                placeholder="Re-enter your email address"
-                value={formData.confirmEmail}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="relative">
-              <input
-                type="text"
-                name="university"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
-                placeholder="Enter your College name"
-                value={formData.university}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="relative">
-              <input
-                type="text"
-                name="branch"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
-                placeholder="Enter your branch"
-                value={formData.branch}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="relative">
-              <input
-                type="text"
-                name="yearOfGraduation"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
-                placeholder="Enter your year of graduation"
-                value={formData.yearOfGraduation}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
+            >
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -279,7 +320,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
                   'Register as Ambassador'
                 )}
               </button>
-            </div>
+            </motion.div>
           </form>
         )}
       </div>
