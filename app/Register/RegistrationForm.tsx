@@ -116,6 +116,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
               Thank you for registering!
             </h3>
             <p className="text-gray-300">You will receive an email from us shortly.</p>
+            <p className="text-gray-300">Don't forget to peek into your promotions tab for our welcome email!</p>
+            
             <br />
             <div className="flex flex-col space-y-4">
               <Button
