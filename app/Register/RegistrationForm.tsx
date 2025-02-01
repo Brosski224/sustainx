@@ -9,6 +9,8 @@ interface FormData {
   email: string;
   confirmEmail: string; // New field for re-entering email
   university: string;
+  branch: string; // New field for branch
+  yearOfGraduation: string; // New field for year of graduation
 }
 
 interface RegistrationFormProps {
@@ -22,6 +24,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
     email: '',
     confirmEmail: '', // Initialize confirmEmail
     university: '',
+    branch: '', // Initialize branch
+    yearOfGraduation: '', // Initialize year of graduation
   });
   const router = useRouter();
   const [error, setError] = useState<string>('');
@@ -209,6 +213,30 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
                 placeholder="Enter your College name"
                 value={formData.university}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="relative">
+              <input
+                type="text"
+                name="branch"
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                placeholder="Enter your branch"
+                value={formData.branch}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="relative">
+              <input
+                type="text"
+                name="yearOfGraduation"
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                placeholder="Enter your year of graduation"
+                value={formData.yearOfGraduation}
                 onChange={handleChange}
               />
             </div>
