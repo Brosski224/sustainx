@@ -260,7 +260,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
               </motion.div>
             )}
 
-            {['name', 'phone', 'email', 'confirmEmail', 'Collage', 'branch', 'yearOfGraduation'].map((field, index) => (
+            {['name', 'phone', 'email', 'confirmEmail', 'university', 'branch', 'yearOfGraduation'].map((field, index) => (
               <motion.div
                 key={field}
                 initial={{ opacity: 0, y: 20 }}
@@ -273,7 +273,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
                   name={field}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
-                  placeholder={`Enter your ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
+                  placeholder={`Enter your ${field === 'university' ? 'university' : field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
                   value={formData[field as keyof FormData]}
                   onChange={handleChange}
                 />
