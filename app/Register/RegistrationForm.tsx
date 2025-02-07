@@ -197,7 +197,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
               <p className="text-gray-300">You will receive an email from us shortly.</p>
               <br />
               <div className="bg-green-800 p-4 rounded-lg shadow-lg">
-                <p className="text-gray-300 font-bold">Don't forget to peek into your promotions tab for our welcome email!</p>
+                <p className="text-gray-300 font-bold">Don't forget to peek into your All mails for our welcome email!</p>
                 <br />
                 <Button
                   onClick={() => setShowButtons(true)}
