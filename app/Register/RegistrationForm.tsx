@@ -9,8 +9,8 @@ interface FormData {
   email: string;
   confirmEmail: string;
   institutionType: 'college' | 'school';
-  institutionName: string;
-  streamOrClass: string;
+  college: string; // Keep original field name for backend compatibility
+  branch: string; // Keep original field name for backend compatibility
   yearOfGraduation: string;
 }
 
@@ -25,11 +25,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
     email: '',
     confirmEmail: '',
     institutionType: 'college',
-    institutionName: '',
-    streamOrClass: '',
+    college: '',
+    branch: '',
     yearOfGraduation: '',
   });
-
   const router = useRouter();
   const [error, setError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -54,9 +53,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
     "💡 Innovation + passion = a sustainable revolution!",
     "🌏 Be the change you wish to see in the world!",
     "🌟 Your commitment lights the way for others!",
-    "🌻 Bloom where you’re planted and inspire growth!",
+    "🌻 Bloom where you're planted and inspire growth!",
     "🌞 Harness the power of the sun and your potential!",
-    "🌱 Sustainability starts with you—let’s grow together!",
+    "🌱 Sustainability starts with you—let's grow together!",
     "🌍 Every choice matters. Choose wisely, choose green!",
     "🌈 Dream big, act boldly, and paint the world green!",
     "🌿 Nature thanks you for being its champion!",
@@ -64,8 +63,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
     "🌎 Protect today, preserve tomorrow!",
     "🌻 Your efforts are the roots of a thriving planet!",
     "🌞 Brighten the world with your sustainable actions!",
-    "🌍 Let’s create a legacy of love for the Earth!",
-    "🌿 Green is not just a color—it’s a way of life!",
+    "🌍 Let's create a legacy of love for the Earth!",
+    "🌿 Green is not just a color—it's a way of life!",
   ];
   const [messageIndex, setMessageIndex] = useState<number>(0);
 
@@ -338,11 +337,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
             >
               <input
                 type="text"
-                name="institutionName"
+                name="college"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
                 placeholder={`Enter your ${formData.institutionType === 'college' ? 'college' : 'school'} name`}
-                value={formData.institutionName}
+                value={formData.college}
                 onChange={handleChange}
               />
             </motion.div>
@@ -355,11 +354,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onRegister }) => {
             >
               <input
                 type="text"
-                name="streamOrClass"
+                name="branch"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
                 placeholder={`Enter your ${formData.institutionType === 'college' ? 'branch/stream' : 'class'}`}
-                value={formData.streamOrClass}
+                value={formData.branch}
                 onChange={handleChange}
               />
             </motion.div>
